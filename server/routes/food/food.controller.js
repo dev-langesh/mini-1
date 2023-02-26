@@ -9,7 +9,7 @@ async function openFoodRegisteration(req, res) {
       throw new Error("Invalid credentials");
     }
 
-    const update = { open_choices: req.body.open_choices, date: req.body.date };
+    const update = { open_choices: true, date: req.body.date };
 
     const food = await Food.findOneAndUpdate(
       {},
@@ -21,9 +21,27 @@ async function openFoodRegisteration(req, res) {
       await Food.create(update);
     }
 
-    console.log(food);
-
     return res.json({ message: "opened registeration" });
+  } catch (err) {
+    return res.json({ error: err.message });
+  }
+}
+
+async function closeFoodRegisteration(req, res) {
+  try {
+    if (!req.user || req.user.role !== "admin") {
+      throw new Error("Invalid credentials");
+    }
+
+    const update = { open_choices: false, veg: [], non_veg: [] };
+
+    const food = await Food.findOneAndUpdate(
+      {},
+      { $set: update },
+      { new: true }
+    );
+
+    return res.json({ message: "Registeration closed" });
   } catch (err) {
     return res.json({ error: err.message });
   }
@@ -38,14 +56,20 @@ async function chooseFoodItem(req, res) {
 
     const user = await User.findById(req.user.userId).select("food_code");
 
-    const food = await Food.find({
+    const food = await Food.find({});
+
+    if (!food[0].open_choices) {
+      return res.json({ error: "Registeration closed" });
+    }
+
+    const isAlreadyChoosen = await Food.find({
       $or: [
         { veg: { $in: [user.food_code] } },
         { non_veg: { $in: [user.food_code] } },
       ],
     });
 
-    if (food.length !== 0) {
+    if (isAlreadyChoosen.length !== 0) {
       return res.json({ error: "Already choosed" });
     }
 
@@ -76,4 +100,8 @@ async function chooseFoodItem(req, res) {
   }
 }
 
-module.exports = { openFoodRegisteration, chooseFoodItem };
+module.exports = {
+  openFoodRegisteration,
+  chooseFoodItem,
+  closeFoodRegisteration,
+};
