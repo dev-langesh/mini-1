@@ -2,6 +2,21 @@ const { generateCode } = require("../../lib/generateCode");
 const { Food } = require("../../models/food.model");
 const { User } = require("../../models/user.model");
 
+// GET /food
+async function getAllRecords(req, res) {
+  try {
+    if (req.user.role !== "admin") {
+      throw new Error("Invalid credentials");
+    }
+
+    const food = await Food.find({});
+
+    return res.json(food);
+  } catch (err) {
+    return res.json({ error: err.message });
+  }
+}
+
 // PUT /food/open-registeration
 async function openFoodRegisteration(req, res) {
   try {
@@ -27,9 +42,10 @@ async function openFoodRegisteration(req, res) {
   }
 }
 
+// PUT /food/close-registeration
 async function closeFoodRegisteration(req, res) {
   try {
-    if (!req.user || req.user.role !== "admin") {
+    if (req.user.role !== "admin") {
       throw new Error("Invalid credentials");
     }
 
@@ -104,4 +120,5 @@ module.exports = {
   openFoodRegisteration,
   chooseFoodItem,
   closeFoodRegisteration,
+  getAllRecords,
 };
