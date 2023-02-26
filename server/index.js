@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const { connectDb } = require("./lib/mongoose");
 const { userRouter } = require("./routes/auth/user.route");
+const { loadAdminDetails } = require("./lib/loadAdminDetails");
 
 dotenv.config();
 
@@ -17,8 +18,10 @@ app.use(cors());
 
 app.use(express.json());
 
-// routes
+// load admin details
+loadAdminDetails();
 
+// routes
 app.use("/auth", userRouter);
 
 app.get("/", (req, res) => {
