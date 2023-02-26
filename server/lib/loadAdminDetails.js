@@ -1,13 +1,16 @@
 const { User } = require("../models/user.model");
+const bcrypt = require("bcrypt");
 
 async function loadAdminDetails() {
   try {
     const adminEmail = process.env.ADMIN_EMAIL;
     const adminPassword = process.env.ADMIN_PASSWORD;
 
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
     await User.create({
       email: adminEmail,
-      password: adminPassword,
+      password: hashedPassword,
       role: "admin",
       verified_account: true,
     });

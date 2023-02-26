@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const { connectDb } = require("./lib/mongoose");
 const { userRouter } = require("./routes/auth/user.route");
 const { loadAdminDetails } = require("./lib/loadAdminDetails");
+const { foodRouter } = require("./routes/food/food.route");
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ loadAdminDetails();
 
 // routes
 app.use("/auth", userRouter);
+app.use("/food", foodRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

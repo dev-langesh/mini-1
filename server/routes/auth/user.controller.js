@@ -3,13 +3,16 @@ const jwt = require("jsonwebtoken");
 const { sendMail } = require("../../lib/verificationEmail");
 const { User } = require("../../models/user.model");
 
+const MIN = 1000;
+const MAX = 9999;
+
 // POST /auth/register
 async function register(req, res) {
   try {
     // Hash the password
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    const code = Math.floor(Math.random() * 10000);
+    const code = Math.floor(Math.random() * (MIN - MAX + 1)) + MAX;
 
     // Create a new user
     await User.create({
@@ -37,6 +40,8 @@ async function login(req, res) {
     // Find the user by email
     const user = await User.findOne({ email: req.body.email });
 
+    console.log(user);
+
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
@@ -52,7 +57,10 @@ async function login(req, res) {
     }
 
     // Generate a JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET
+    );
 
     res.status(200).json({ token });
   } catch (error) {
@@ -88,7 +96,7 @@ async function verifyCode(req, res) {
     return res.json({
       message: "Code Verified",
       token,
-      userType: user.userType,
+      role: user.role,
     });
   } catch (err) {
     return res.json({ error: err.message, stack: err.stack });

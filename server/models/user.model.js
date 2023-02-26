@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   verification_code: String,
+  food_code: String,
   verified_account: { type: Boolean, default: false },
   role: { type: String, default: "user" },
 });
