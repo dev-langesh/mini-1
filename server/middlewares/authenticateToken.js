@@ -13,6 +13,8 @@ function authenticateToken(req, res, next) {
       return res.status(403).json({ error: "Forbidden" });
     }
 
+    console.log(user);
+
     req.user = user;
     next();
   });

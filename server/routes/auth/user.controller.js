@@ -2,9 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sendMail } = require("../../lib/verificationEmail");
 const { User } = require("../../models/user.model");
-
-const MIN = 1000;
-const MAX = 9999;
+const { generateCode } = require("../../lib/generateCode");
 
 // POST /auth/register
 async function register(req, res) {
@@ -12,7 +10,7 @@ async function register(req, res) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    const code = Math.floor(Math.random() * (MIN - MAX + 1)) + MAX;
+    const code = generateCode();
 
     // Create a new user
     await User.create({
