@@ -6,10 +6,13 @@ const { connectDb } = require("./lib/mongoose");
 const { userRouter } = require("./routes/auth/user.route");
 const { loadAdminDetails } = require("./lib/loadAdminDetails");
 const { foodRouter } = require("./routes/food/food.route");
+const { loadAdmin } = require("./lib/loadAdmin");
 
 dotenv.config();
 
 connectDb();
+
+loadAdmin();
 
 const app = express();
 
