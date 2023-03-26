@@ -53,10 +53,10 @@ export default function VerifyCode() {
     } else {
       window.localStorage.setItem("token", data.token);
 
-      if (data.userType !== "student") {
+      if (data.role === "admin") {
         window.location.href = "/admin";
       } else {
-        window.location.href = "/user/dashboard";
+        window.location.href = "/";
       }
     }
   }
@@ -72,11 +72,11 @@ export default function VerifyCode() {
         className="shadow-2xl p-8 space-y-3 flex flex-col justify-center"
       >
         <h1 className="text-center text-xl font-bold font-slab text-indigo-600">
-          Ingrese su OTP
+          Enter your OTP
         </h1>
 
         <p className="text-slate-500 pb-2">
-          El código de verificación enviado a{" "}
+          The verification code is sent to{" "}
           {state.email ? state.email : "your email"}
         </p>
 
@@ -89,10 +89,7 @@ export default function VerifyCode() {
           onChange={handleChange}
         />
 
-        <Button
-          text={loading ? "Cargando..." : "Verificar Cuenta"}
-          type="submit"
-        />
+        <Button text={loading ? "Loading..." : "Verify"} type="submit" />
 
         <Snackbar
           open={error.open}

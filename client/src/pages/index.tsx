@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
-import RegisterForm from "@/components/auth/RegisterForm";
+import RegisterForm from "@/components/auth/Register/RegisterForm";
 
 const inter = Inter({ subsets: ["latin"] });
 

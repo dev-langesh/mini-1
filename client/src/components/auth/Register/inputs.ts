@@ -6,8 +6,12 @@ import {
 
 export const inputs: inputType[] = [
   {
-    name: "username",
+    name: "name",
     placeholder: "User Name",
+  },
+  {
+    name: "student_id",
+    placeholder: "Register no",
   },
   {
     name: "phone",
@@ -58,7 +62,7 @@ export const adminInputs: inputType[] = [
 ];
 
 export const initialRegisterState: RegisterStateType = {
-  username: "",
+  name: "",
   phone: 0,
   email: "",
   password: "",

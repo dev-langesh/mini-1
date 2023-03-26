@@ -7,14 +7,19 @@ const { generateCode } = require("../../lib/generateCode");
 // POST /auth/register
 async function register(req, res) {
   try {
+    const { name, student_id, email, password, phone } = req.body;
+
     // Hash the password
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const code = generateCode();
 
     // Create a new user
     await User.create({
-      email: req.body.email,
+      name,
+      student_id,
+      phone,
+      email: email,
       password: hashedPassword,
       verification_code: code,
     });
@@ -52,6 +57,13 @@ async function login(req, res) {
 
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    if (!user.verified_account) {
+      return res.json({
+        message: "Account not verified",
+        redirect: "verify_code",
+      });
     }
 
     // Generate a JWT token

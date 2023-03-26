@@ -13,6 +13,7 @@ import RadioGroup from "./RadioGroup";
 import FormFields from "./FormFields";
 import Footer from "./Footer";
 import Link from "next/link";
+import { Alert, Snackbar } from "@mui/material";
 
 export default function RegisterForm({ type }: { type: String }) {
   const [state, setState] = useState<any>(initialRegisterState);
@@ -69,8 +70,7 @@ export default function RegisterForm({ type }: { type: String }) {
 
         window.localStorage.setItem("email", state.email);
 
-        alert("registeration success");
-        // router.push("/auth/verify-code");
+        router.push("/auth/verify-code");
       }
     } catch (err) {
       if (err) {
@@ -105,7 +105,7 @@ export default function RegisterForm({ type }: { type: String }) {
         <Button type="submit" text={loading ? "Loading..." : "Register"} />
 
         <Footer />
-        {/* <Snackbar
+        <Snackbar
           onClose={closeError}
           open={error.open}
           autoHideDuration={6000}
@@ -113,7 +113,7 @@ export default function RegisterForm({ type }: { type: String }) {
           <Alert onClose={closeError} severity="error">
             {error.msg}
           </Alert>
-        </Snackbar> */}
+        </Snackbar>
       </form>
     </div>
   );

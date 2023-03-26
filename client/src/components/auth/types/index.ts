@@ -10,7 +10,7 @@ export type errorType = {
 };
 
 export type RegisterStateType = {
-  username: string;
+  name: string;
   phone: number;
   email: string;
   password: string;

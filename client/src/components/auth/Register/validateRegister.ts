@@ -3,25 +3,27 @@ import { RegisterStateType } from "../types/index";
 type validateType = { state: RegisterStateType };
 
 export function validateRegister({ state }: validateType) {
+  console.log(state);
+
   const promise = new Promise((resolve, reject) => {
     if (
       !state.confirmPassword ||
       !state.email ||
       !state.password ||
       !state.phone ||
-      !state.username
+      !state.name
     ) {
-      reject("Rellena todos los campos");
+      reject("Fill all the fields");
     } else if (
       !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(state.email)
     ) {
-      reject("Email inválido");
+      reject("Invalid Email");
     } else if (state.password.length < 6) {
-      reject("La longitud de la contraseña es demasiado baja");
+      reject("Required minimum 6 letters");
     } else if (state.password !== state.confirmPassword) {
-      reject("La contraseña no coincide");
+      reject("Password doesn't match");
     } else {
-      resolve("éxito de la validación");
+      resolve("Valid inputs");
     }
   });
 
