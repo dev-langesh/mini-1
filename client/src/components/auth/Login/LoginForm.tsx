@@ -76,8 +76,13 @@ export default function LoginForm() {
       });
     } else {
       window.localStorage.setItem("email", state.email);
+      window.localStorage.setItem("token", data.token);
 
       alert("login success");
+
+      if (data.role === "admin") {
+        router.push("/admin");
+      }
 
       // router.push("/auth/verify-code");
     }

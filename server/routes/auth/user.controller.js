@@ -72,7 +72,7 @@ async function login(req, res) {
       process.env.JWT_SECRET
     );
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, role: user.role });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });

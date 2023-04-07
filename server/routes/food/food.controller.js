@@ -24,7 +24,12 @@ async function openFoodRegisteration(req, res) {
       throw new Error("Invalid credentials");
     }
 
-    const update = { open_choices: true, date: req.body.date };
+    const update = {
+      open_choices: true,
+      veg: [],
+      non_veg: [],
+      date: req.body.date,
+    };
 
     const food = await Food.findOneAndUpdate(
       {},
