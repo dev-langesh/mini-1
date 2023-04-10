@@ -9,7 +9,7 @@ export default function PreviousRegisteration() {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/food`);
 
       if (res.data.length !== 0) {
-        setState(res.data[0]);
+        setState(res.data);
       }
     }
 

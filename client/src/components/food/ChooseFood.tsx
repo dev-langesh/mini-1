@@ -31,10 +31,6 @@ export default function ChooseFood() {
             },
           }
         );
-        console.log("hel");
-
-        console.log(foodReq.data);
-
         setFood(foodReq.data);
 
         setFoodCode(foodCodeReq.data);
@@ -62,11 +58,9 @@ export default function ChooseFood() {
         },
       }
     );
-  }
 
-  useEffect(() => {
-    console.log("food state", food);
-  });
+    window.location.reload();
+  }
 
   return (
     <>
