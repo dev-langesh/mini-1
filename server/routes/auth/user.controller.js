@@ -99,7 +99,7 @@ async function verifyCode(req, res) {
     }
 
     const token = jwt.sign(
-      { id: user._id, role: user.userType },
+      { userId: user._id, role: user.userType },
       process.env.JWT_SECRET
     );
 

@@ -82,6 +82,8 @@ export default function LoginForm() {
 
       if (data.role === "admin") {
         router.push("/admin");
+      } else {
+        router.push("/");
       }
 
       // router.push("/auth/verify-code");

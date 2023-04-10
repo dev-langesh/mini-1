@@ -6,18 +6,11 @@ export default function PreviousRegisteration() {
 
   useEffect(() => {
     async function get() {
-      const token = window.localStorage.getItem("token");
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/food`);
 
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/food`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setState(res.data[0]);
+      if (res.data.length !== 0) {
+        setState(res.data[0]);
+      }
     }
 
     get();

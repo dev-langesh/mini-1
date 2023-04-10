@@ -5,11 +5,7 @@ const { User } = require("../../models/user.model");
 // GET /food
 async function getAllRecords(req, res) {
   try {
-    if (req.user.role !== "admin") {
-      throw new Error("Invalid credentials");
-    }
-
-    const food = await Food.find({});
+    const food = await Food.findOne({});
 
     return res.json(food);
   } catch (err) {
@@ -73,9 +69,15 @@ async function chooseFoodItem(req, res) {
   try {
     const { food_item } = req.body;
 
+    console.log(food_item);
+
     const code = generateCode();
 
-    const user = await User.findById(req.user.userId).select("food_code");
+    console.log(req.user);
+
+    const user = await User.findById(req.user.userId);
+
+    console.log(user);
 
     const food = await Food.find({});
 
@@ -83,15 +85,21 @@ async function chooseFoodItem(req, res) {
       return res.json({ error: "Registeration closed" });
     }
 
-    const isAlreadyChoosen = await Food.find({
-      $or: [
-        { veg: { $in: [user.food_code] } },
-        { non_veg: { $in: [user.food_code] } },
-      ],
-    });
+    if (user.food_code) {
+      const isAlreadyChoosen = await Food.find({
+        $or: [
+          { veg: { $in: [user.food_code] } },
+          { non_veg: { $in: [user.food_code] } },
+        ],
+      });
 
-    if (isAlreadyChoosen.length !== 0) {
-      return res.json({ error: "Already choosed" });
+      console.log(await Food.find({}));
+
+      console.log(isAlreadyChoosen);
+
+      if (isAlreadyChoosen.length !== 0) {
+        return res.json({ error: "Already choosed" });
+      }
     }
 
     if (food_item === "veg") {
@@ -121,9 +129,40 @@ async function chooseFoodItem(req, res) {
   }
 }
 
+// GET /food/code
+async function getFoodCode(req, res) {
+  try {
+    const user = await User.findById(req.user.userId);
+
+    console.log(user);
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    if (user.food_code) {
+      const isAlreadyChoosen = await Food.find({
+        $or: [
+          { veg: { $in: [user.food_code] } },
+          { non_veg: { $in: [user.food_code] } },
+        ],
+      });
+
+      if (isAlreadyChoosen.length !== 0) {
+        return res.json(user);
+      }
+    }
+
+    return res.json({ error: "code not found" });
+  } catch (err) {
+    if (err) res.json({ error: err.message });
+  }
+}
+
 module.exports = {
   openFoodRegisteration,
   chooseFoodItem,
   closeFoodRegisteration,
   getAllRecords,
+  getFoodCode,
 };
