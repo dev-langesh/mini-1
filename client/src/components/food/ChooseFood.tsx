@@ -31,7 +31,7 @@ export default function ChooseFood() {
             },
           }
         );
-        setFood(foodReq.data);
+        setFood(foodReq.data[0]);
 
         setFoodCode(foodCodeReq.data);
       }

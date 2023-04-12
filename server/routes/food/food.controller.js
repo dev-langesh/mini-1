@@ -5,7 +5,9 @@ const { User } = require("../../models/user.model");
 // GET /food
 async function getAllRecords(req, res) {
   try {
-    const food = await Food.findOne({});
+    const food = await Food.find({});
+
+    console.log(food);
 
     return res.json(food);
   } catch (err) {
