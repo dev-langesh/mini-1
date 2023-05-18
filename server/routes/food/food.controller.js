@@ -5,11 +5,20 @@ const { User } = require("../../models/user.model");
 // GET /food
 async function getAllRecords(req, res) {
   try {
-    const food = await Food.find({});
+    const food = await Food.findOne({});
+    const user_count = await User.find({}).count();
 
-    console.log(food);
+    if (food) {
+      const registered_count = food.non_veg.length + food.veg.length;
 
-    return res.json(food);
+      // console.log(user_count, food.non_veg.length);
+
+      console.log(food);
+
+      return res.json({ food, user_count, registered_count });
+    }
+
+    return res.json({});
   } catch (err) {
     return res.json({ error: err.message });
   }
@@ -27,6 +36,7 @@ async function openFoodRegisteration(req, res) {
       veg: [],
       non_veg: [],
       date: req.body.date,
+      session: req.body.session,
     };
 
     const food = await Food.findOneAndUpdate(
@@ -161,10 +171,107 @@ async function getFoodCode(req, res) {
   }
 }
 
+async function downloadRecord(req, res) {
+  var wb = new xl.Workbook();
+
+  // Add Worksheets to the workbook
+  var ws = wb.addWorksheet("Sheet 1");
+
+  // Create a reusable style
+  var style = wb.createStyle({
+    font: {
+      color: "#FF0800",
+      size: 12,
+    },
+    numberFormat: "$#,##0.00; ($#,##0.00); -",
+  });
+
+  const participants = course.students;
+
+  const studentDetails = await User.find({
+    email: { $in: participants.map((p) => p.email) },
+  }).select("-password");
+
+  const columns = [
+    "Nombre",
+    "Apellido",
+    "Cedula",
+    "Email",
+    "Telefono",
+    "Carrera",
+    "Semestre",
+  ];
+
+  columns.forEach((val, i) => {
+    ws.cell(1, i + 1)
+      .string(val)
+      .style(style);
+  });
+
+  studentDetails.forEach((student, r_no) => {
+    const studentCol = [];
+    studentCol.push(
+      student.username,
+      student.surname,
+      student.student_id,
+      student.email,
+      student.phone,
+      student.career,
+      student.semister
+    );
+
+    let c_no = 1;
+
+    studentCol.forEach((val) => {
+      if (typeof val === "number") {
+        ws.cell(r_no + 2, c_no).number(val);
+      } else {
+        ws.cell(r_no + 2, c_no).string(val);
+      }
+      c_no++;
+    });
+  });
+
+  const filePath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "public",
+    "studentDetails",
+    `${course.title}.xlsx`
+  );
+
+  const isExists = fs.existsSync(filePath);
+
+  if (isExists) {
+    fs.rmSync(filePath);
+  }
+
+  wb.write(filePath);
+}
+
+async function validateToken(req, res) {
+  try {
+    const { code } = req.body;
+
+    console.log(code);
+
+    const veg = await Food.findOne({ veg: code });
+    const non_veg = await Food.findOne({ non_veg: code });
+
+    if (veg) return res.json({ meal: "veg" });
+    else if (non_veg) return res.json({ meal: "non_veg" });
+    else throw new Error("Invalid token");
+  } catch (err) {
+    if (err) res.json({ error: err.message });
+  }
+}
+
 module.exports = {
   openFoodRegisteration,
   chooseFoodItem,
   closeFoodRegisteration,
   getAllRecords,
   getFoodCode,
+  validateToken,
 };

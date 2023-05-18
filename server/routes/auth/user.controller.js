@@ -33,7 +33,7 @@ async function register(req, res) {
     res.status(201).json({ message: "User created" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.json({ error: "Internal server error" });
   }
 }
 
@@ -46,7 +46,7 @@ async function login(req, res) {
     console.log(user);
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.json({ error: "Invalid email or password" });
     }
 
     // Compare the password
@@ -56,7 +56,7 @@ async function login(req, res) {
     );
 
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.json({ error: "Invalid email or password" });
     }
 
     if (!user.verified_account) {
@@ -75,7 +75,7 @@ async function login(req, res) {
     res.status(200).json({ token, role: user.role });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.json({ error: "Internal server error" });
   }
 }
 

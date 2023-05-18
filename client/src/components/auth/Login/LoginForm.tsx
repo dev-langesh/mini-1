@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import Footer from "./Footer";
 import LoginInputField from "./LoginInputField";
+import { Alert, Snackbar } from "@mui/material";
 
 type errorType = {
   open: boolean;
@@ -112,7 +113,7 @@ export default function LoginForm() {
 
         <Footer />
 
-        {/* <Snackbar
+        <Snackbar
           open={error.open}
           autoHideDuration={6000}
           onClose={closeError}
@@ -120,7 +121,7 @@ export default function LoginForm() {
           <Alert onClose={closeError} severity="error">
             {error.msg}
           </Alert>
-        </Snackbar> */}
+        </Snackbar>
       </form>
     </div>
   );

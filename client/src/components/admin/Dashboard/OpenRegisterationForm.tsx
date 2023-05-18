@@ -7,11 +7,13 @@ export default function OpenRegisterationForm() {
   async function handleSubmit(e: any) {
     e.preventDefault();
 
+    console.log(date);
+
     const token = window.localStorage.getItem("token");
 
     const res = await axios.put(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/food/open-registeration`,
-      { date },
+      date,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -24,6 +26,15 @@ export default function OpenRegisterationForm() {
     window.location.reload();
   }
 
+  function handleChange(e: any) {
+    setState((p: any) => {
+      return {
+        ...p,
+        [e.target.name]: e.target.value,
+      };
+    });
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -34,10 +45,21 @@ export default function OpenRegisterationForm() {
       </h1>
 
       <input
-        onChange={(e) => setState(e.target.value)}
+        onChange={handleChange}
         type="date"
+        name="date"
         className="border p-1"
       />
+
+      <label htmlFor="session">Session</label>
+
+      <select onChange={handleChange} className="p-2" name="session" id="">
+        <option value=""></option>
+        <option value="Morning">Morning</option>
+        <option value="Afternoon">Afternoon</option>
+        <option value="Night">Night</option>
+        <option value="Evening">Evening</option>
+      </select>
 
       <input
         type="submit"

@@ -31,7 +31,7 @@ export default function ChooseFood() {
             },
           }
         );
-        setFood(foodReq.data[0]);
+        setFood(foodReq.data);
 
         setFoodCode(foodCodeReq.data);
       }
@@ -39,6 +39,8 @@ export default function ChooseFood() {
 
     get();
   }, []);
+
+  useEffect(() => console.log(food));
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setData({ food_item: e.target.value });
@@ -62,10 +64,14 @@ export default function ChooseFood() {
     window.location.reload();
   }
 
+  if (!food) {
+    return <h1 className="p-6 text-center">No Registeration found</h1>;
+  }
+
   return (
     <>
       <div className="flex items-center justify-center flex-col space-y-4">
-        {food.open_choices && (
+        {food?.food?.open_choices && (
           <form
             onSubmit={handleSubmit}
             className="flex flex-col space-y-4 w-[400px] shadow-2xl p-6 mt-20"
@@ -73,7 +79,7 @@ export default function ChooseFood() {
             <h1 className="p-4 text-center font-bold text-xl">Choose Food</h1>
 
             <p className="w-full text-start py-4 text-bold text-slate-500">
-              Date: <span>{food.date}</span>
+              Date: <span>{food.food.date}</span>
             </p>
             <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">

@@ -1,4 +1,5 @@
 const express = require("express");
+const http = require("http");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -33,6 +34,36 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+
+const { Server } = require("socket.io");
+const { Food } = require("./models/food.model");
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("user is connected");
+
+  socket.on("token", async (code) => {
+    console.log(code);
+
+    const veg = await Food.findOne({ veg: code });
+    const non_veg = await Food.findOne({ non_veg: code });
+
+    let meal;
+
+    if (veg) meal = "veg";
+    else if (non_veg) meal = "non_veg";
+    else meal = "Invalid Token";
+
+    io.emit("token", meal);
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`Server listening on port ${process.env.PORT}`);
 });

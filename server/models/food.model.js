@@ -5,6 +5,7 @@ const foodSchema = new mongoose.Schema({
   veg: [String],
   non_veg: [String],
   date: String,
+  session: String,
 });
 
 const Food = mongoose.model("food", foodSchema);

@@ -1,20 +1,23 @@
+import Button from "@/components/common/buttons/Button";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 export default function PreviousRegisteration() {
-  const [state, setState] = useState<any>({});
+  const [state, setState] = useState<any>({ food: {} });
 
   useEffect(() => {
     async function get() {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/food`);
 
-      if (res.data.length !== 0) {
-        setState(res.data[0]);
+      if (res.data) {
+        setState(res.data);
       }
     }
 
     get();
   }, []);
+
+  // useEffect(() => console.log(state.food));
 
   return (
     <div>
@@ -26,21 +29,55 @@ export default function PreviousRegisteration() {
         <p className="text-slate-500">
           Date:{" "}
           <span className="text-slate-500 font-bold text-lg px-2 ">
-            {state.date}
+            {state.food.date}
+          </span>
+        </p>{" "}
+        <p className="text-slate-500">
+          Session:{" "}
+          <span className="text-slate-500 font-bold text-lg px-2 ">
+            {state.food.session}
           </span>
         </p>{" "}
         <p className="text-slate-500">
           Non Veg:{" "}
           <span className="text-slate-500 font-bold text-lg px-2 ">
-            {state.non_veg?.length}
+            {state.food.non_veg?.length}
           </span>
         </p>{" "}
         <p className="text-slate-500">
           Veg:{" "}
           <span className="text-slate-500 font-bold text-lg px-2 ">
-            {state.veg?.length}
+            {state.food.veg?.length}
           </span>
         </p>
+        <p className="text-slate-500">
+          Total Users:{" "}
+          <span className="text-slate-500 font-bold text-lg px-2 ">
+            {state.user_count}
+          </span>
+        </p>
+        <p className="text-slate-500">
+          Registered Users:{" "}
+          <span className="text-slate-500 font-bold text-lg px-2 ">
+            {state.registered_count}
+          </span>
+        </p>
+        <div className="flex flex-col gap-6">
+          <Button className="w-60" type="button" text="Download"></Button>
+          <Button
+            href="/validate-token"
+            className="w-60"
+            type="button"
+            text="Validate Token"
+          ></Button>
+          <Button
+            href="/live-result"
+            className="w-60"
+            type="button"
+            text="Live Result"
+          ></Button>
+        </div>
+        {/* <Button className="w-60" type="button" text=""></Button> */}
       </section>
     </div>
   );
