@@ -1,6 +1,10 @@
 const { generateCode } = require("../../lib/generateCode");
 const { Food } = require("../../models/food.model");
 const { User } = require("../../models/user.model");
+const xl = require("excel4node");
+const path = require("path");
+const fs = require("fs");
+const { sendMail } = require("../../lib/verificationEmail");
 
 // GET /food
 async function getAllRecords(req, res) {
@@ -63,6 +67,12 @@ async function closeFoodRegisteration(req, res) {
     }
 
     const update = { open_choices: false, veg: [], non_veg: [] };
+
+    sendMail(
+      "langesh705@gmail.com",
+      "Get Hostel Food Token",
+      "Admin opened the portel to get your Food Token"
+    );
 
     const food = await Food.findOneAndUpdate(
       {},
@@ -171,7 +181,7 @@ async function getFoodCode(req, res) {
   }
 }
 
-async function downloadRecord(req, res) {
+async function generateReport(req, res) {
   var wb = new xl.Workbook();
 
   // Add Worksheets to the workbook
@@ -186,20 +196,22 @@ async function downloadRecord(req, res) {
     numberFormat: "$#,##0.00; ($#,##0.00); -",
   });
 
-  const participants = course.students;
+  const users = await User.find({ role: "user" }).select("-password");
 
-  const studentDetails = await User.find({
-    email: { $in: participants.map((p) => p.email) },
-  }).select("-password");
+  const food = await Food.findOne({});
+
+  const veg = food.veg;
+  const non_veg = food.non_veg;
 
   const columns = [
-    "Nombre",
-    "Apellido",
-    "Cedula",
-    "Email",
-    "Telefono",
-    "Carrera",
-    "Semestre",
+    "name",
+    "roll_no",
+    "email",
+    "phone",
+    "food_code",
+    "meal",
+    "date",
+    "session",
   ];
 
   columns.forEach((val, i) => {
@@ -208,17 +220,26 @@ async function downloadRecord(req, res) {
       .style(style);
   });
 
-  studentDetails.forEach((student, r_no) => {
+  users.forEach(async (student, r_no) => {
     const studentCol = [];
+
+    let meal;
+
+    if (veg.includes(student.food_code)) meal = "veg";
+    else meal = "non_veg";
+
     studentCol.push(
-      student.username,
-      student.surname,
+      student.name,
       student.student_id,
       student.email,
       student.phone,
-      student.career,
-      student.semister
+      student.food_code,
+      meal,
+      food.date,
+      food.session
     );
+
+    console.log(studentCol);
 
     let c_no = 1;
 
@@ -232,14 +253,7 @@ async function downloadRecord(req, res) {
     });
   });
 
-  const filePath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "public",
-    "studentDetails",
-    `${course.title}.xlsx`
-  );
+  const filePath = path.join(__dirname, "..", "..", "public", `report.xlsx`);
 
   const isExists = fs.existsSync(filePath);
 
@@ -248,6 +262,8 @@ async function downloadRecord(req, res) {
   }
 
   wb.write(filePath);
+
+  res.json({ message: "report generated" });
 }
 
 async function validateToken(req, res) {
@@ -274,4 +290,5 @@ module.exports = {
   getAllRecords,
   getFoodCode,
   validateToken,
+  generateReport,
 };

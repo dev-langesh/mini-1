@@ -53,7 +53,7 @@ export default function ValidateToken() {
 
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center border border-gray-400 p-6">
-      <h1 className="p-10 text-center font-bold text-2xl">Live Result</h1>
+      <h1 className="p-10 text-center font-bold text-2xl">Token Validator</h1>
       <div className="shadow-2xl p-6 rounded-lg flex gap-6 items-center">
         <form onSubmit={handleSubmit} className="w-1/2 space-y-2" action="">
           <label htmlFor="" className="text-lg font-bold">

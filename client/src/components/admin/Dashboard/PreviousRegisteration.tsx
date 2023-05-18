@@ -3,13 +3,15 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 export default function PreviousRegisteration() {
-  const [state, setState] = useState<any>({ food: {} });
+  const [state, setState] = useState<any>({});
+  const [reportLink, setReportLink] = useState<boolean>(false);
 
   useEffect(() => {
     async function get() {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/food`);
 
       if (res.data) {
+        // console.log(res.data);
         setState(res.data);
       }
     }
@@ -18,6 +20,16 @@ export default function PreviousRegisteration() {
   }, []);
 
   // useEffect(() => console.log(state.food));
+
+  async function generateReport() {
+    const report = await axios.post(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/food/gen-report`
+    );
+
+    console.log(report.data);
+
+    window.open(`${process.env.NEXT_PUBLIC_SERVER_URL}/report.xlsx`, "_blank");
+  }
 
   return (
     <div>
@@ -29,25 +41,25 @@ export default function PreviousRegisteration() {
         <p className="text-slate-500">
           Date:{" "}
           <span className="text-slate-500 font-bold text-lg px-2 ">
-            {state.food.date}
+            {state.food?.date}
           </span>
         </p>{" "}
         <p className="text-slate-500">
           Session:{" "}
           <span className="text-slate-500 font-bold text-lg px-2 ">
-            {state.food.session}
+            {state.food?.session}
           </span>
         </p>{" "}
         <p className="text-slate-500">
           Non Veg:{" "}
           <span className="text-slate-500 font-bold text-lg px-2 ">
-            {state.food.non_veg?.length}
+            {state.food?.non_veg?.length}
           </span>
         </p>{" "}
         <p className="text-slate-500">
           Veg:{" "}
           <span className="text-slate-500 font-bold text-lg px-2 ">
-            {state.food.veg?.length}
+            {state.food?.veg?.length}
           </span>
         </p>
         <p className="text-slate-500">
@@ -63,7 +75,12 @@ export default function PreviousRegisteration() {
           </span>
         </p>
         <div className="flex flex-col gap-6">
-          <Button className="w-60" type="button" text="Download"></Button>
+          <Button
+            handleClick={generateReport}
+            className="w-60"
+            type="button"
+            text="Download Report"
+          ></Button>
           <Button
             href="/validate-token"
             className="w-60"

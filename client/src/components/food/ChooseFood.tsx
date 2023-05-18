@@ -78,8 +78,11 @@ export default function ChooseFood() {
           >
             <h1 className="p-4 text-center font-bold text-xl">Choose Food</h1>
 
-            <p className="w-full text-start py-4 text-bold text-slate-500">
+            <p className="w-full text-start text-bold text-slate-500">
               Date: <span>{food.food.date}</span>
+            </p>
+            <p className="w-full text-start py-4 text-bold text-slate-500">
+              Session: <span>{food.food.session}</span>
             </p>
             <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">
